@@ -1,0 +1,48 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <cctype>
+
+using namespace std;
+
+int solution(int cacheSize, vector<string> cities) {
+    int answer = 0;
+    vector<string> cache;
+    vector<int> recent;
+    int change = 0;
+    int loc = 0;
+    
+    if (cacheSize == 0) return cities.size()*5;
+        
+    for (int i = 0; i < cities.size(); i++){
+        string city = "";
+        
+        for (char c : cities[i])
+            city += tolower(c);
+        
+        loc = find(cache.begin(), cache.end(), city) - cache.begin();
+        
+        if (loc < cache.size()){
+            answer++;
+            recent[loc] = i;
+            change = min_element(recent.begin(), recent.end()) - recent.begin();
+        }
+        
+        else{
+            answer += 5;
+            if(cache.size() < cacheSize){
+                cache.push_back(city);
+                recent.push_back(i);
+            }
+            
+            else{
+                cache[change] = city;
+                recent[change] = i;
+                change = min_element(recent.begin(), recent.end()) - recent.begin();
+            }
+        }
+        
+    }
+    
+    return answer;
+}
